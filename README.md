@@ -1,28 +1,28 @@
 # JoinForJoin (J4J)
 
-JoinForJoin, Discord OAuth2 ile giriş yapan kullanıcıların davet kodu tanımlayıp eşleşme sırasına girmesine ve karşılıklı sunucu katılım sürecinin otomatik ilerletilmesine odaklanan bir Discord bot + web panel projesidir.
+JoinForJoin is a Discord bot + web panel project focused on letting users sign in with Discord OAuth2, define an invite code, enter a matchmaking queue, and automatically progress a mutual server-join workflow.
 
-Bu repo; Discord bot mantığını, Express tabanlı paneli, Socket.IO ile gerçek zamanlı durum akışını ve MongoDB üzerinde tutulan kullanıcı verilerini bir araya getirir.
+This repository brings together Discord bot logic, an Express-based panel, real-time status flow with Socket.IO, and user data stored in MongoDB.
 
-## Özellikler
+## Features
 
-- Discord hesabı ile giriş (`passport-discord`)
-- Kullanıcıya ait sunucu davet kodunu kaydetme
-- Eşleşme kuyruğuna girme ve kullanıcıları otomatik eşleştirme
-- Socket.IO ile anlık durum güncellemesi
-- MongoDB üzerinde basit kullanıcı/veri saklama yapısı
-- Discord botu üzerinden sunucuya katılım işlemlerini tetikleme
+- Sign in with a Discord account (`passport-discord`)
+- Save a user's server invite code
+- Join a matchmaking queue and automatically match users
+- Instant status updates with Socket.IO
+- Simple user/data storage structure on MongoDB
+- Trigger server join operations through the Discord bot
 
-## Nasıl Çalışır?
+## How It Works
 
-1. Kullanıcı Discord ile giriş yapar.
-2. Panel üzerinden kendi sunucusuna ait davet kodunu girer.
-3. Eşleşme başlatıldığında kullanıcı sıraya alınır.
-4. `events/finding.js` arka planda uygun ikinci kullanıcıyı bulur.
-5. Bot, iki tarafın davetlerini kontrol eder ve katılım işlemlerini dener.
-6. Sonuç Socket.IO üzerinden panele gerçek zamanlı olarak yansıtılır.
+1. The user signs in with Discord.
+2. The user enters their own server invite code in the panel.
+3. When matchmaking starts, the user is added to the queue.
+4. `events/finding.js` finds a suitable second user in the background.
+5. The bot validates both invite codes and attempts join operations.
+6. The result is reflected to the panel in real time through Socket.IO.
 
-## Teknoloji Yığını
+## Tech Stack
 
 - Node.js 16.x
 - Express
@@ -32,60 +32,60 @@ Bu repo; Discord bot mantığını, Express tabanlı paneli, Socket.IO ile gerç
 - EJS
 - MongoDB / Mongoose
 
-## Proje Yapısı
+## Project Structure
 
-- `main.js`: Botu, Express uygulamasını ve Socket.IO sunucusunu başlatır.
-- `events/ready.js`: Bot hazır olduğunda çalışan event.
-- `events/finding.js`: Kuyruktaki kullanıcıları eşleştiren ana akış.
-- `functions/global.js`: Yardımcı fonksiyonlar, veri erişimi ve Discord join işlemleri.
-- `views/`: Panel tarafındaki route, template ve istemci kodları.
-- `databases/`: MongoDB bağlantısı ve model tanımları.
-- `config.js`: Panel ve Discord uygulamasıyla ilgili temel yapılandırmalar.
+- `main.js`: Starts the bot, Express app, and Socket.IO server.
+- `events/ready.js`: Event that runs when the bot is ready.
+- `events/finding.js`: Main flow that matches users in the queue.
+- `functions/global.js`: Helper functions, data access, and Discord join operations.
+- `views/`: Panel-side routes, templates, and client code.
+- `databases/`: MongoDB connection and model definitions.
+- `config.js`: Core configuration for the panel and Discord application.
 
-## Kurulum
+## Setup
 
-### Gereksinimler
+### Requirements
 
 - Node.js `16.x`
 - npm
-- MongoDB bağlantısı
-- Discord Developer Portal üzerinden oluşturulmuş bir uygulama/bot
+- A MongoDB connection
+- An application/bot created through the Discord Developer Portal
 
-### Adımlar
+### Steps
 
-1. Bağımlılıkları yükleyin:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-Not: Kaynak kod `mongoose` kullanıyor. Eğer temiz kurulumda bu paket eksikse ayrıca `npm install mongoose` çalıştırmanız gerekir.
+Note: The source code uses `mongoose`. If this package is missing in a clean install, run `npm install mongoose` as well.
 
-2. Gerekli yapılandırmaları düzenleyin:
+2. Update the required configuration:
 
-- `config.js` içindeki `panel`, `owners` ve `bot` alanlarını kendi bilgilerinizle güncelleyin.
-- `databases/database.js` içindeki MongoDB bağlantı adresini kendi veritabanınıza göre değiştirin.
+- Update the `panel`, `owners`, and `bot` fields in `config.js` with your own values.
+- Change the MongoDB connection URL in `databases/database.js` to match your database.
 
-3. Ortam değişkenlerini tanımlayın:
+3. Define environment variables:
 
 ```bash
 export PORT=3000
 export token=YOUR_DISCORD_BOT_TOKEN
 ```
 
-4. Uygulamayı çalıştırın:
+4. Run the application:
 
 ```bash
 npm start
 ```
 
-## Yapılandırma Notları
+## Configuration Notes
 
-Bu sürümde bazı ayarlar doğrudan dosyalar içinden okunuyor:
+In this version, some settings are read directly from files:
 
-- `config.js > panel`: Panelin çalışacağı public adres
-- `config.js > bot.id`: Discord uygulama/bot ID'si
+- `config.js > panel`: Public URL where the panel will run
+- `config.js > bot.id`: Discord application/bot ID
 - `config.js > bot.secret`: Discord OAuth2 client secret
 - `process.env.token`: Discord bot token
-- `process.env.PORT`: Web sunucusunun dinleyeceği port
+- `process.env.PORT`: Port the web server listens on
 - `databases/database.js`: MongoDB connection string
